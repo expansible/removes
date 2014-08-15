@@ -1,2 +1,9 @@
+%YAML 1.1  # uninstalls/defaults/main.yml  -*- mode: yaml -*-
+
+# Default values for uninstalls
 ---
-# defaults file for removes
+# packages to uninstall
+removes:
+
+# packages to explicitly install to prevent autoremove
+reinstalls:

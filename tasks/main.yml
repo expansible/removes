@@ -1,2 +1,22 @@
+%YAML 1.1  # roles/removes/tasks/main.yml  -*- mode: yaml -*-
+
+# Uninstall unneeded/undesired packages
 ---
-# tasks file for removes
+# Explicitly "install" packages already installed, to prevent autoremove
+- name: Explicitly require packages to prevent autoremove
+  shell: apt-get -y install {{ ' '.join(reinstalls) }}
+  register: install
+  changed_when: '"NEW" in install.stdout or "UPDATE" in install'
+
+# Remove unneeded packages
+- name: Remove unnecessary packages
+  apt: pkg={{ item }} state=absent purge=yes
+  with_items: removes
+  tags: upgrade
+
+# Remove additional packages no longer required by others
+- name: Autoremove unused packages
+  shell: apt-get -y autoremove
+  tags: upgrade
+  register: autoremove
+  changed_when: '"REMOVE" in autoremove.stdout'
